@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flexi Educational Consult - Offline Flyer Generator</title>
-    
-    <!-- html2canvas library -->
+
+    <title>Flexi Educational Consult - Daily Quest Flyer Generator</title>
+
+    <!-- Local libraries -->
     <script src="html2canvas.min.js"></script>
-    
-    <!-- Quill.js Offline Local CSS -->
-    <link href="quill.snow.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="quill.snow.css">
 
     <style>
         :root {
@@ -21,22 +21,27 @@
             --border-color: #cbd5e1;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        body { 
-            background-color: var(--bg-color); 
-            color: var(--text-color); 
-            padding: 15px; 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        header { 
-            text-align: center; 
-            margin-bottom: 20px; 
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
         }
 
-        header h1 { 
-            color: var(--royal-blue); 
-            font-size: 1.8rem; 
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            color: var(--royal-blue);
+            font-size: 1.8rem;
             font-weight: 800;
         }
 
@@ -45,54 +50,72 @@
             font-size: 0.9rem;
             margin-top: 4px;
         }
-        
-        .main-layout { 
-            max-width: 600px; 
-            margin: 0 auto; 
+
+        .main-layout {
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 20px; 
+            gap: 20px;
         }
 
-        .controls-panel { 
-            background: var(--panel-bg); 
+        /* =========================
+           CONTROL PANELS
+        ========================= */
+
+        .controls-panel {
+            background: var(--panel-bg);
             border: 2px solid var(--royal-blue);
-            padding: 15px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 6px rgba(0, 45, 114, 0.05); 
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 45, 114, 0.05);
         }
 
-        .controls-panel h2 { 
-            font-size: 1rem; 
-            color: var(--royal-blue); 
-            margin-bottom: 12px; 
+        .controls-panel h2 {
+            font-size: 1rem;
+            color: var(--royal-blue);
+            margin-bottom: 12px;
             font-weight: 700;
         }
 
-        .form-group { 
-            margin-bottom: 15px; 
+        .form-group {
+            margin-bottom: 15px;
         }
 
-        label { 
-            font-size: 0.85rem; 
-            font-weight: 700; 
-            color: var(--royal-blue); 
+        label {
             display: block;
-            margin-bottom: 4px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--royal-blue);
+            margin-bottom: 5px;
         }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 9px 10px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--royal-blue);
+            box-shadow: 0 0 0 2px rgba(0, 45, 114, 0.08);
+        }
+
+        /* =========================
+           QUILL EDITORS
+        ========================= */
 
         .quill-editor-container {
             background: #ffffff;
             border-radius: 8px;
             overflow: hidden;
             border: 1px solid var(--border-color);
-        }
-
-        .ql-container.ql-snow {
-            border: none !important;
-            font-size: 0.9rem;
-            font-family: inherit;
-            min-height: 50px;
         }
 
         .ql-toolbar.ql-snow {
@@ -106,25 +129,29 @@
         }
 
         .ql-toolbar.ql-snow button {
-            width: 26px;
-            height: 24px;
+            width: 27px;
+            height: 25px;
         }
 
-        input[type="text"] {
-            width: 100%;
-            padding: 8px 10px;
-            background: #ffffff;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            border-radius: 6px;
+        .ql-container.ql-snow {
+            border: none !important;
             font-size: 0.9rem;
-            outline: none;
+            min-height: 55px;
+            font-family: inherit;
         }
 
-        .preview-section { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
+        .ql-editor {
+            min-height: 55px;
+        }
+
+        /* =========================
+           PREVIEW
+        ========================= */
+
+        .preview-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             background: #ffffff;
             border: 2px solid var(--royal-blue);
             padding: 15px;
@@ -132,402 +159,1605 @@
             width: 100%;
         }
 
-        .preview-title { 
-            font-size: 1rem; 
-            color: var(--royal-blue); 
-            margin-bottom: 8px; 
-            font-weight: 700; 
+        .preview-title {
+            font-size: 1rem;
+            color: var(--royal-blue);
+            margin-bottom: 10px;
+            font-weight: 700;
         }
 
         .flyer-canvas-wrapper {
             width: 100%;
             display: flex;
             justify-content: center;
-            overflow: hidden; /* Fixed overflowing layout */
+            align-items: center;
+            overflow: hidden;
             margin-bottom: 12px;
             padding: 4px;
         }
 
-        /* Fixed absolute dimension & aspect ratio containment */
+        /*
+         * IMPORTANT:
+         *
+         * The flyer itself is NOT forced to 420x525 anymore.
+         *
+         * JavaScript reads the real natural dimensions of background.jpg
+         * and applies the correct aspect ratio.
+         */
         .flyer-canvas {
-            width: 420px;
-            height: 525px;
             position: relative;
-            background-size: 100% 100%; /* Force background image to fit exact canvas boundaries */
-            background-position: center;
-            background-repeat: no-repeat;
-            border-radius: 8px;
+            width: min(100%, 500px);
+            aspect-ratio: 4 / 5;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: #0f172a;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
             flex-shrink: 0;
-            background-color: #0f172a;
+            isolation: isolate;
         }
 
-        #q-flyer-bg { background-image: url('question_bg.jpg'); }
-        #s-flyer-bg { background-image: url('solution_bg.jpg'); }
+        /*
+         * The actual flyer image.
+         *
+         * Using an <img> instead of CSS background-image prevents
+         * distortion and allows us to detect its real dimensions.
+         */
+        .flyer-background {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+        }
 
-        /* Corrected subject pill position */
+        /*
+         * The overlay layer always follows the exact dimensions
+         * of the image.
+         */
+        .flyer-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* =========================
+           SUBJECT
+        ========================= */
+
         .injected-subject {
             position: absolute;
-            top: 310px;
-            left: 85px;
-            width: 250px;
-            height: 38px;
-            color: #ffffff;
-            font-weight: 900;
-            font-size: 0.95rem;
+
+            /*
+             * These percentages correspond to the old 420x525
+             * design coordinates:
+             *
+             * left 85 / 420 = 20.238%
+             * top 310 / 525 = 59.048%
+             * width 250 / 420 = 59.524%
+             * height 38 / 525 = 7.238%
+             */
+            left: 20.238%;
+            top: 59.048%;
+            width: 59.524%;
+            height: 7.238%;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
+            color: #ffffff;
+            font-weight: 900;
+            font-size: clamp(12px, 2.5vw, 19px);
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 1px;
+
+            overflow: hidden;
+            padding: 0 5px;
         }
+
+        /* =========================
+           QUESTION
+        ========================= */
 
         .injected-question {
             position: absolute;
-            top: 360px;
-            left: 30px;
-            width: 360px;
-            height: 110px;
-            color: #ffffff;
-            font-weight: 600;
-            font-size: 0.85rem;
+
+            left: 7.143%;
+            top: 68.571%;
+            width: 85.714%;
+            height: 20.952%;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
+            color: #ffffff;
+            font-weight: 600;
+            font-size: clamp(10px, 2.05vw, 16px);
+
             text-align: center;
-            padding: 5px;
-            word-break: break-word;
             line-height: 1.3;
+
+            padding: 8px 10px;
+
+            overflow: hidden;
+            word-break: normal;
+            overflow-wrap: break-word;
         }
 
-        /* Corrected option boxes alignment */
+        /*
+         * Normalize Quill's generated HTML.
+         * Without this, Quill's <p> margins can move the text
+         * away from the position of its parent.
+         */
+        .flyer-text p {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .flyer-text strong {
+            font-weight: 800;
+        }
+
+        .flyer-text u {
+            text-decoration: underline;
+        }
+
+        .flyer-text sup {
+            line-height: 0;
+        }
+
+        .flyer-text sub {
+            line-height: 0;
+        }
+
+        /* =========================
+           OPTIONS
+        ========================= */
+
         .injected-options {
             position: absolute;
-            top: 485px;
-            left: 35px;
-            width: 350px;
+
+            /*
+             * Old design:
+             * top: 485px
+             * left: 35px
+             * width: 350px
+             */
+            left: 8.333%;
+            top: 92.381%;
+            width: 83.333%;
+
             display: flex;
             flex-direction: column;
-            gap: 6px;
+
+            gap: 0.8%;
         }
 
         .opt-slot {
-            height: 32px;
+            width: 100%;
+
+            /*
+             * The original 32px height is approximately
+             * 6.095% of the 525px canvas.
+             */
+            min-height: 6.095%;
+
             display: flex;
             align-items: center;
-            padding-left: 20px;
+
+            padding-left: 4.762%;
+
             color: #0f172a;
-            font-weight: bold;
-            font-size: 0.8rem;
+            font-weight: 700;
+            font-size: clamp(9px, 1.9vw, 15px);
+
+            line-height: 1.2;
+
+            overflow: hidden;
         }
+
+        .opt-slot p {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* =========================
+           SOLUTION
+        ========================= */
 
         .injected-solution {
             position: absolute;
-            top: 330px;
-            left: 35px;
-            width: 350px;
-            height: 170px;
+
+            left: 8.333%;
+            top: 62.857%;
+            width: 83.333%;
+            height: 32.381%;
+
             color: #0f172a;
+
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: clamp(10px, 2.05vw, 16px);
+            line-height: 1.45;
+
             padding: 10px;
-            overflow-y: auto;
-            word-break: break-word;
-            line-height: 1.4;
+
+            overflow: hidden;
+            overflow-wrap: break-word;
         }
+
+        /* =========================
+           DOWNLOAD
+        ========================= */
 
         .download-btn {
             background: var(--royal-blue);
             color: white;
+
             border: none;
             padding: 10px 16px;
+
             border-radius: 6px;
+
             font-weight: bold;
             cursor: pointer;
+
             font-size: 0.9rem;
+
             width: 100%;
             max-width: 300px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+            transition:
+                background 0.2s ease,
+                transform 0.1s ease;
         }
 
-        .download-btn:hover { 
-            background: var(--royal-blue-hover); 
+        .download-btn:hover {
+            background: var(--royal-blue-hover);
         }
+
+        .download-btn:active {
+            transform: scale(0.98);
+        }
+
+        .download-btn:disabled {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        /* =========================
+           MODAL
+        ========================= */
 
         .modal-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
+            inset: 0;
+
+            background: rgba(0, 0, 0, 0.5);
+
             display: none;
             justify-content: center;
             align-items: center;
+
             z-index: 1000;
         }
+
         .modal-card {
             background: white;
+
             padding: 20px;
+
             border-radius: 10px;
+
             width: 90%;
             max-width: 320px;
+
             border: 2px solid var(--royal-blue);
         }
+
         .modal-card h3 {
             font-size: 1rem;
             color: var(--royal-blue);
             margin-bottom: 12px;
         }
+
         .modal-card input {
             margin-bottom: 10px;
         }
+
         .modal-actions {
             display: flex;
             gap: 10px;
             margin-top: 10px;
         }
+
         .modal-actions button {
             flex: 1;
+
             padding: 8px;
+
             border-radius: 5px;
+
             font-weight: bold;
+
             cursor: pointer;
+
             border: none;
         }
-        .btn-confirm { background: var(--royal-blue); color: white; }
-        .btn-cancel { background: #cbd5e1; color: #334155; }
+
+        .btn-confirm {
+            background: var(--royal-blue);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #cbd5e1;
+            color: #334155;
+        }
+
+        /* =========================
+           IMAGE ERROR MESSAGE
+        ========================= */
+
+        .flyer-error {
+            position: absolute;
+            inset: 0;
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            padding: 30px;
+
+            color: white;
+
+            background: #0f172a;
+
+            z-index: 5;
+
+            font-weight: 600;
+        }
+
+        /* =========================
+           SMALL SCREENS
+        ========================= */
+
+        @media (max-width: 480px) {
+
+            body {
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 1.45rem;
+            }
+
+            header p {
+                font-size: 0.8rem;
+            }
+
+            .controls-panel,
+            .preview-section {
+                padding: 10px;
+            }
+
+            .flyer-canvas-wrapper {
+                padding: 0;
+            }
+
+            .injected-question {
+                padding: 5px 7px;
+            }
+
+            .injected-solution {
+                padding: 7px;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-    <header>
-        <h1>Flexi Educational Consult</h1>
-        <p>Template Overlay Flyer Generator (Universal Math Toolbars)</p>
-    </header>
+<header>
+    <h1>Flexi Educational Consult</h1>
+    <p>Daily Quest Flyer Generator</p>
+</header>
 
-    <div class="main-layout">
-        <!-- Question Controls -->
-        <div class="controls-panel">
-            <h2>Question Flyer Data</h2>
-            
-            <div class="form-group">
-                <label>Subject Name (Blue Pill)</label>
-                <input type="text" id="inp-subject" value="MATHEMATICS">
-            </div>
+<div class="main-layout">
 
-            <div class="form-group">
-                <label>Question</label>
-                <div class="quill-editor-container">
-                    <div id="editor-q">Calculate the time taken for a mango fruit that fall from the tree 20 m to the ground [g = 10 ms⁻²]</div>
-                </div>
-            </div>
+    <!-- =====================================================
+         QUESTION CONTROLS
+    ====================================================== -->
 
-            <div class="form-group">
-                <label>Option A</label>
-                <div class="quill-editor-container">
-                    <div id="editor-a">10s</div>
-                </div>
-            </div>
+    <div class="controls-panel">
 
-            <div class="form-group">
-                <label>Option B</label>
-                <div class="quill-editor-container">
-                    <div id="editor-b">5s</div>
-                </div>
-            </div>
+        <h2>Question Flyer Data</h2>
 
-            <div class="form-group">
-                <label>Option C</label>
-                <div class="quill-editor-container">
-                    <div id="editor-c">2s</div>
-                </div>
-            </div>
+        <div class="form-group">
+            <label for="inp-subject">
+                Subject Name
+            </label>
 
-            <div class="form-group">
-                <label>Option D</label>
-                <div class="quill-editor-container">
-                    <div id="editor-d">1s</div>
-                </div>
-            </div>
+            <input
+                type="text"
+                id="inp-subject"
+                value="MATHEMATICS"
+                autocomplete="off"
+            >
         </div>
 
-        <!-- Solution Controls -->
-        <div class="controls-panel">
-            <h2>Solution Flyer Data</h2>
-            <div class="form-group">
-                <label>Solution Text</label>
-                <div class="quill-editor-container">
-                    <div id="editor-sol">Using s = ½gt², 20 = ½(10)t² ⇒ t² = 4 ⇒ t = 2s</div>
+        <div class="form-group">
+
+            <label>
+                Question
+            </label>
+
+            <div class="quill-editor-container">
+                <div id="editor-q">
+                    Calculate the time taken for a mango fruit that fall from the tree 20 m to the ground [g = 10 ms⁻²]
                 </div>
             </div>
+
         </div>
 
-        <!-- PREVIEWS -->
-        <div class="preview-section">
-            <div class="preview-title">Question Flyer Preview</div>
-            <div class="flyer-canvas-wrapper">
-                <div class="flyer-canvas" id="q-flyer-bg">
-                    <div class="injected-subject" id="prev-subject"></div>
-                    <div class="injected-question" id="prev-q"></div>
+        <div class="form-group">
+
+            <label>
+                Option A
+            </label>
+
+            <div class="quill-editor-container">
+                <div id="editor-a">
+                    10s
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+                Option B
+            </label>
+
+            <div class="quill-editor-container">
+                <div id="editor-b">
+                    5s
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+                Option C
+            </label>
+
+            <div class="quill-editor-container">
+                <div id="editor-c">
+                    2s
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+                Option D
+            </label>
+
+            <div class="quill-editor-container">
+                <div id="editor-d">
+                    1s
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SOLUTION CONTROLS
+    ====================================================== -->
+
+    <div class="controls-panel">
+
+        <h2>Solution Flyer Data</h2>
+
+        <div class="form-group">
+
+            <label>
+                Solution Text
+            </label>
+
+            <div class="quill-editor-container">
+
+                <div id="editor-sol">
+                    Using s = ½gt², 20 = ½(10)t² ⇒ t² = 4 ⇒ t = 2s
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         QUESTION PREVIEW
+    ====================================================== -->
+
+    <div class="preview-section">
+
+        <div class="preview-title">
+            Question Flyer Preview
+        </div>
+
+        <div class="flyer-canvas-wrapper">
+
+            <div
+                class="flyer-canvas"
+                id="q-flyer-bg"
+            >
+
+                <!-- REAL REPOSITORY BACKGROUND -->
+                <img
+                    class="flyer-background"
+                    id="q-background"
+                    src="background.jpg"
+                    alt=""
+                    draggable="false"
+                >
+
+                <div
+                    class="flyer-error"
+                    id="q-error"
+                >
+                    The flyer background could not be loaded.
+                    Please make sure <strong>background.jpg</strong>
+                    exists in the repository.
+                </div>
+
+                <div class="flyer-overlay">
+
+                    <div
+                        class="injected-subject"
+                        id="prev-subject"
+                    ></div>
+
+                    <div
+                        class="injected-question flyer-text"
+                        id="prev-q"
+                    ></div>
+
                     <div class="injected-options">
-                        <div class="opt-slot" id="prev-opt-a"></div>
-                        <div class="opt-slot" id="prev-opt-b"></div>
-                        <div class="opt-slot" id="prev-opt-c"></div>
-                        <div class="opt-slot" id="prev-opt-d"></div>
+
+                        <div
+                            class="opt-slot flyer-text"
+                            id="prev-opt-a"
+                        ></div>
+
+                        <div
+                            class="opt-slot flyer-text"
+                            id="prev-opt-b"
+                        ></div>
+
+                        <div
+                            class="opt-slot flyer-text"
+                            id="prev-opt-c"
+                        ></div>
+
+                        <div
+                            class="opt-slot flyer-text"
+                            id="prev-opt-d"
+                        ></div>
+
                     </div>
+
                 </div>
+
             </div>
-            <button class="download-btn" onclick="downloadFlyer('q-flyer-bg', 'question_flyer.png')">Download Question Flyer</button>
+
         </div>
 
-        <div class="preview-section">
-            <div class="preview-title">Solution Flyer Preview</div>
-            <div class="flyer-canvas-wrapper">
-                <div class="flyer-canvas" id="s-flyer-bg">
-                    <div class="injected-solution" id="prev-sol"></div>
-                </div>
-            </div>
-            <button class="download-btn" onclick="downloadFlyer('s-flyer-bg', 'solution_flyer.png')">Download Solution Flyer</button>
-        </div>
+        <button
+            class="download-btn"
+            id="download-question"
+            onclick="downloadFlyer(
+                'q-flyer-bg',
+                'question_flyer.png',
+                this
+            )"
+        >
+            Download Question Flyer
+        </button>
+
     </div>
 
-    <!-- Fraction Input Modal -->
-    <div class="modal-overlay" id="fraction-modal">
-        <div class="modal-card">
-            <h3>Insert Fraction (x/y)</h3>
-            <label>Numerator (x)</label>
-            <input type="text" id="frac-num" placeholder="e.g. 2">
-            <label>Denominator (y)</label>
-            <input type="text" id="frac-den" placeholder="e.g. 3">
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeFractionModal()">Cancel</button>
-                <button class="btn-confirm" onclick="confirmFraction()">Insert</button>
-            </div>
+
+    <!-- =====================================================
+         SOLUTION PREVIEW
+    ====================================================== -->
+
+    <div class="preview-section">
+
+        <div class="preview-title">
+            Solution Flyer Preview
         </div>
+
+        <div class="flyer-canvas-wrapper">
+
+            <div
+                class="flyer-canvas"
+                id="s-flyer-bg"
+            >
+
+                <!-- SAME CURRENT REPOSITORY BACKGROUND -->
+                <img
+                    class="flyer-background"
+                    id="s-background"
+                    src="background.jpg"
+                    alt=""
+                    draggable="false"
+                >
+
+                <div
+                    class="flyer-error"
+                    id="s-error"
+                >
+                    The flyer background could not be loaded.
+                    Please make sure <strong>background.jpg</strong>
+                    exists in the repository.
+                </div>
+
+                <div class="flyer-overlay">
+
+                    <div
+                        class="injected-solution flyer-text"
+                        id="prev-sol"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <button
+            class="download-btn"
+            id="download-solution"
+            onclick="downloadFlyer(
+                's-flyer-bg',
+                'solution_flyer.png',
+                this
+            )"
+        >
+            Download Solution Flyer
+        </button>
+
     </div>
 
-    <!-- Quill.js Offline Local Script -->
-    <script src="quill.min.js"></script>
+</div>
 
-    <script>
-        let activeQuillInstance = null;
 
-        const toolbarOptions = [
-            ['bold', 'underline'],
-            [{ 'script': 'sub'}, { 'script': 'super' }],
-            ['clean']
-        ];
+<!-- =====================================================
+     FRACTION MODAL
+====================================================== -->
 
-        const quillQ = new Quill('#editor-q', { theme: 'snow', modules: { toolbar: toolbarOptions } });
-        const quillA = new Quill('#editor-a', { theme: 'snow', modules: { toolbar: toolbarOptions } });
-        const quillB = new Quill('#editor-b', { theme: 'snow', modules: { toolbar: toolbarOptions } });
-        const quillC = new Quill('#editor-c', { theme: 'snow', modules: { toolbar: toolbarOptions } });
-        const quillD = new Quill('#editor-d', { theme: 'snow', modules: { toolbar: toolbarOptions } });
-        const quillSol = new Quill('#editor-sol', { theme: 'snow', modules: { toolbar: toolbarOptions } });
+<div
+    class="modal-overlay"
+    id="fraction-modal"
+>
 
-        const editors = [
-            { quill: quillQ, previewId: 'prev-q', prefix: '' },
-            { quill: quillA, previewId: 'prev-opt-a', prefix: 'A) ' },
-            { quill: quillB, previewId: 'prev-opt-b', prefix: 'B) ' },
-            { quill: quillC, previewId: 'prev-opt-c', prefix: 'C) ' },
-            { quill: quillD, previewId: 'prev-opt-d', prefix: 'D) ' },
-            { quill: quillSol, previewId: 'prev-sol', prefix: '' }
-        ];
+    <div class="modal-card">
+
+        <h3>
+            Insert Fraction (x/y)
+        </h3>
+
+        <label for="frac-num">
+            Numerator (x)
+        </label>
+
+        <input
+            type="text"
+            id="frac-num"
+            placeholder="e.g. 2"
+        >
+
+        <label for="frac-den">
+            Denominator (y)
+        </label>
+
+        <input
+            type="text"
+            id="frac-den"
+            placeholder="e.g. 3"
+        >
+
+        <div class="modal-actions">
+
+            <button
+                class="btn-cancel"
+                onclick="closeFractionModal()"
+            >
+                Cancel
+            </button>
+
+            <button
+                class="btn-confirm"
+                onclick="confirmFraction()"
+            >
+                Insert
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     QUILL
+====================================================== -->
+
+<script src="quill.min.js"></script>
+
+<script>
+
+    /* =====================================================
+       QUILL SETUP
+    ====================================================== */
+
+    let activeQuillInstance = null;
+
+    const toolbarOptions = [
+        ['bold', 'underline'],
+        [
+            { 'script': 'sub' },
+            { 'script': 'super' }
+        ],
+        ['clean']
+    ];
+
+
+    const quillQ = new Quill(
+        '#editor-q',
+        {
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions
+            }
+        }
+    );
+
+
+    const quillA = new Quill(
+        '#editor-a',
+        {
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions
+            }
+        }
+    );
+
+
+    const quillB = new Quill(
+        '#editor-b',
+        {
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions
+            }
+        }
+    );
+
+
+    const quillC = new Quill(
+        '#editor-c',
+        {
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions
+            }
+        }
+    );
+
+
+    const quillD = new Quill(
+        '#editor-d',
+        {
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions
+            }
+        }
+    );
+
+
+    const quillSol = new Quill(
+        '#editor-sol',
+        {
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions
+            }
+        }
+    );
+
+
+    const editors = [
+
+        {
+            quill: quillQ,
+            previewId: 'prev-q',
+            prefix: ''
+        },
+
+        {
+            quill: quillA,
+            previewId: 'prev-opt-a',
+            prefix: 'A) '
+        },
+
+        {
+            quill: quillB,
+            previewId: 'prev-opt-b',
+            prefix: 'B) '
+        },
+
+        {
+            quill: quillC,
+            previewId: 'prev-opt-c',
+            prefix: 'C) '
+        },
+
+        {
+            quill: quillD,
+            previewId: 'prev-opt-d',
+            prefix: 'D) '
+        },
+
+        {
+            quill: quillSol,
+            previewId: 'prev-sol',
+            prefix: ''
+        }
+
+    ];
+
+
+    editors.forEach(item => {
+
+        item.quill.on(
+            'selection-change',
+            range => {
+
+                if (range) {
+                    activeQuillInstance = item.quill;
+                }
+
+            }
+        );
+
+    });
+
+
+    activeQuillInstance = quillQ;
+
+
+    /* =====================================================
+       MATH SYMBOL MAPS
+    ====================================================== */
+
+    const supFractionMap = {
+
+        '0': '⁰',
+        '1': '¹',
+        '2': '²',
+        '3': '³',
+        '4': '⁴',
+        '5': '⁵',
+        '6': '⁶',
+        '7': '⁷',
+        '8': '⁸',
+        '9': '⁹'
+
+    };
+
+
+    const subFractionMap = {
+
+        '0': '₀',
+        '1': '₁',
+        '2': '₂',
+        '3': '₃',
+        '4': '₄',
+        '5': '₅',
+        '6': '₆',
+        '7': '₇',
+        '8': '₈',
+        '9': '₉'
+
+    };
+
+
+    /* =====================================================
+       FRACTION MODAL
+    ====================================================== */
+
+    function openFractionModal() {
+
+        document.getElementById('frac-num').value = '';
+        document.getElementById('frac-den').value = '';
+
+        document.getElementById(
+            'fraction-modal'
+        ).style.display = 'flex';
+
+    }
+
+
+    function closeFractionModal() {
+
+        document.getElementById(
+            'fraction-modal'
+        ).style.display = 'none';
+
+    }
+
+
+    function confirmFraction() {
+
+        const num =
+            document.getElementById('frac-num').value.trim();
+
+        const den =
+            document.getElementById('frac-den').value.trim();
+
+
+        if (!num || !den) {
+
+            alert(
+                'Please enter both numerator and denominator.'
+            );
+
+            return;
+
+        }
+
+
+        let supPart = '';
+
+        for (const char of num) {
+
+            supPart +=
+                supFractionMap[char] || char;
+
+        }
+
+
+        let subPart = '';
+
+        for (const char of den) {
+
+            subPart +=
+                subFractionMap[char] || char;
+
+        }
+
+
+        const fractionStr =
+            supPart + '⁄' + subPart;
+
+
+        if (activeQuillInstance) {
+
+            const range =
+                activeQuillInstance.getSelection(true);
+
+            activeQuillInstance.insertText(
+                range
+                    ? range.index
+                    : activeQuillInstance.getLength(),
+                fractionStr
+            );
+
+        }
+
+
+        closeFractionModal();
+
+        updateFlyers();
+
+    }
+
+
+    /* =====================================================
+       SYMBOL INSERTION
+    ====================================================== */
+
+    function insertSymbol(symbol) {
+
+        if (!activeQuillInstance) {
+            return;
+        }
+
+
+        const range =
+            activeQuillInstance.getSelection(true);
+
+
+        activeQuillInstance.insertText(
+            range
+                ? range.index
+                : activeQuillInstance.getLength(),
+            symbol
+        );
+
+
+        updateFlyers();
+
+    }
+
+
+    /* =====================================================
+       ADD CUSTOM MATH BUTTONS
+    ====================================================== */
+
+    window.addEventListener(
+        'DOMContentLoaded',
+        () => {
+
+            document
+                .querySelectorAll('.ql-toolbar')
+                .forEach(toolbar => {
+
+                    const customSpan =
+                        document.createElement('span');
+
+
+                    customSpan.className =
+                        'ql-formats';
+
+
+                    customSpan.innerHTML = `
+
+                        <button
+                            type="button"
+                            title="Insert Fraction"
+                            onclick="openFractionModal()"
+                            style="
+                                font-weight:bold;
+                                width:auto;
+                                padding:0 5px;
+                            "
+                        >
+                            x/y
+                        </button>
+
+                        <button
+                            type="button"
+                            title="Summation"
+                            onclick="insertSymbol('∑')"
+                            style="font-weight:bold;"
+                        >
+                            ∑
+                        </button>
+
+                        <button
+                            type="button"
+                            title="Integral"
+                            onclick="insertSymbol('∫')"
+                            style="font-weight:bold;"
+                        >
+                            ∫
+                        </button>
+
+                        <button
+                            type="button"
+                            title="Square Root"
+                            onclick="insertSymbol('√')"
+                            style="font-weight:bold;"
+                        >
+                            √
+                        </button>
+
+                        <button
+                            type="button"
+                            title="Pi"
+                            onclick="insertSymbol('π')"
+                            style="font-weight:bold;"
+                        >
+                            π
+                        </button>
+
+                        <button
+                            type="button"
+                            title="Implies"
+                            onclick="insertSymbol('⇒')"
+                            style="font-weight:bold;"
+                        >
+                            ⇒
+                        </button>
+
+                    `;
+
+
+                    toolbar.appendChild(customSpan);
+
+                });
+
+        }
+    );
+
+
+    /* =====================================================
+       CLEAN QUILL HTML
+    ====================================================== */
+
+    function cleanQuillHtml(html) {
+
+        if (!html) {
+            return '';
+        }
+
+
+        if (
+            html === '<p><br></p>' ||
+            html === '<p></p>'
+        ) {
+            return '';
+        }
+
+
+        return html;
+
+    }
+
+
+    /* =====================================================
+       UPDATE FLYERS
+    ====================================================== */
+
+    function updateFlyers() {
+
+        const subject =
+            document
+                .getElementById('inp-subject')
+                .value
+                .trim();
+
+
+        document.getElementById(
+            'prev-subject'
+        ).textContent = subject;
+
 
         editors.forEach(item => {
-            item.quill.on('selection-change', (range) => {
-                if (range) activeQuillInstance = item.quill;
-            });
+
+            const htmlContent =
+                item.quill.root.innerHTML;
+
+
+            const cleanHtml =
+                cleanQuillHtml(htmlContent);
+
+
+            const preview =
+                document.getElementById(
+                    item.previewId
+                );
+
+
+            preview.innerHTML =
+                item.prefix + cleanHtml;
+
         });
-        activeQuillInstance = quillQ;
 
-        const supFractionMap = { '0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹' };
-        const subFractionMap = { '0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉' };
+    }
 
-        function openFractionModal() {
-            document.getElementById('frac-num').value = '';
-            document.getElementById('frac-den').value = '';
-            document.getElementById('fraction-modal').style.display = 'flex';
-        }
 
-        function closeFractionModal() {
-            document.getElementById('fraction-modal').style.display = 'none';
-        }
+    /* =====================================================
+       EDITOR EVENTS
+    ====================================================== */
 
-        function confirmFraction() {
-            const num = document.getElementById('frac-num').value;
-            const den = document.getElementById('frac-den').value;
-            if (!num || !den) {
-                alert('Please enter both numerator and denominator');
+    editors.forEach(item => {
+
+        item.quill.on(
+            'text-change',
+            updateFlyers
+        );
+
+    });
+
+
+    document
+        .getElementById('inp-subject')
+        .addEventListener(
+            'input',
+            updateFlyers
+        );
+
+
+    /* =====================================================
+       BACKGROUND IMAGE DIMENSION HANDLING
+    ====================================================== */
+
+    function configureFlyerImage(
+        imageId,
+        canvasId,
+        errorId
+    ) {
+
+        const image =
+            document.getElementById(imageId);
+
+        const canvas =
+            document.getElementById(canvasId);
+
+        const error =
+            document.getElementById(errorId);
+
+
+        function applyDimensions() {
+
+            if (
+                !image.naturalWidth ||
+                !image.naturalHeight
+            ) {
                 return;
             }
 
-            let supPart = '';
-            for (let char of num) { supPart += supFractionMap[char] || char; }
-            let subPart = '';
-            for (let char of den) { subPart += subFractionMap[char] || char; }
 
-            const fractionStr = supPart + '⁄' + subPart;
+            /*
+             * IMPORTANT:
+             *
+             * Use the real image dimensions.
+             *
+             * This means the application does NOT care
+             * whether the uploaded background is:
+             *
+             * 420x525
+             * 1080x1350
+             * 1200x1500
+             * 1440x1800
+             * etc.
+             *
+             * The flyer automatically adopts the exact
+             * aspect ratio of the repository image.
+             */
 
-            if (activeQuillInstance) {
-                const range = activeQuillInstance.getSelection(true);
-                activeQuillInstance.insertText(range ? range.index : activeQuillInstance.getLength(), fractionStr);
+            const ratio =
+                image.naturalWidth /
+                image.naturalHeight;
+
+
+            canvas.style.aspectRatio =
+                `${image.naturalWidth} / ${image.naturalHeight}`;
+
+
+            canvas.dataset.imageWidth =
+                image.naturalWidth;
+
+            canvas.dataset.imageHeight =
+                image.naturalHeight;
+
+        }
+
+
+        image.addEventListener(
+            'load',
+            applyDimensions
+        );
+
+
+        image.addEventListener(
+            'error',
+            () => {
+
+                error.style.display =
+                    'flex';
+
             }
-            closeFractionModal();
-            updateFlyers();
-        }
+        );
 
-        function insertSymbol(symbol) {
-            if (activeQuillInstance) {
-                const range = activeQuillInstance.getSelection(true);
-                activeQuillInstance.insertText(range ? range.index : activeQuillInstance.getLength(), symbol);
+
+        if (image.complete) {
+
+            if (image.naturalWidth) {
+
+                applyDimensions();
+
+            } else {
+
+                error.style.display =
+                    'flex';
+
             }
+
+        }
+
+    }
+
+
+    configureFlyerImage(
+        'q-background',
+        'q-flyer-bg',
+        'q-error'
+    );
+
+
+    configureFlyerImage(
+        's-background',
+        's-flyer-bg',
+        's-error'
+    );
+
+
+    /* =====================================================
+       WAIT FOR ALL FONTS/IMAGES
+       BEFORE EXPORTING
+    ====================================================== */
+
+    async function waitForFlyerReady(
+        flyerElement
+    ) {
+
+        const images =
+            Array.from(
+                flyerElement.querySelectorAll(
+                    'img'
+                )
+            );
+
+
+        await Promise.all(
+            images.map(image => {
+
+                if (image.complete) {
+
+                    return Promise.resolve();
+
+                }
+
+
+                return new Promise(resolve => {
+
+                    image.addEventListener(
+                        'load',
+                        resolve,
+                        {
+                            once: true
+                        }
+                    );
+
+                    image.addEventListener(
+                        'error',
+                        resolve,
+                        {
+                            once: true
+                        }
+                    );
+
+                });
+
+            })
+        );
+
+
+        if (document.fonts) {
+
+            try {
+
+                await document.fonts.ready;
+
+            } catch (error) {
+
+                console.warn(
+                    'Font readiness check failed:',
+                    error
+                );
+
+            }
+
+        }
+
+
+        /*
+         * Give the browser one additional paint cycle.
+         */
+        await new Promise(
+            resolve =>
+                requestAnimationFrame(
+                    () =>
+                        requestAnimationFrame(
+                            resolve
+                        )
+                )
+        );
+
+    }
+
+
+    /* =====================================================
+       DOWNLOAD FLYER
+    ====================================================== */
+
+    async function downloadFlyer(
+        elementId,
+        filename,
+        button
+    ) {
+
+        const flyerElement =
+            document.getElementById(elementId);
+
+
+        if (!flyerElement) {
+
+            alert(
+                'Flyer element could not be found.'
+            );
+
+            return;
+
+        }
+
+
+        const background =
+            flyerElement.querySelector(
+                '.flyer-background'
+            );
+
+
+        if (
+            !background ||
+            !background.complete ||
+            !background.naturalWidth
+        ) {
+
+            alert(
+                'Please wait for the flyer background to finish loading.'
+            );
+
+            return;
+
+        }
+
+
+        const originalText =
+            button.innerText;
+
+
+        button.disabled = true;
+        button.innerText =
+            'Preparing Flyer...';
+
+
+        try {
+
+            await waitForFlyerReady(
+                flyerElement
+            );
+
+
+            /*
+             * Export at 3x the displayed resolution.
+             *
+             * The flyer itself remains responsive on screen,
+             * but the downloaded PNG is much sharper.
+             */
+
+            const canvas =
+                await html2canvas(
+                    flyerElement,
+                    {
+                        scale: 3,
+
+                        useCORS: true,
+
+                        allowTaint: false,
+
+                        backgroundColor: null,
+
+                        logging: false,
+
+                        imageTimeout: 15000,
+
+                        /*
+                         * Keep the exact visible flyer size.
+                         */
+                        width:
+                            flyerElement.clientWidth,
+
+                        height:
+                            flyerElement.clientHeight,
+
+                        scrollX: 0,
+                        scrollY: 0
+                    }
+                );
+
+
+            const link =
+                document.createElement('a');
+
+
+            link.download =
+                filename;
+
+
+            link.href =
+                canvas.toDataURL(
+                    'image/png',
+                    1.0
+                );
+
+
+            document.body.appendChild(
+                link
+            );
+
+
+            link.click();
+
+
+            link.remove();
+
+        } catch (error) {
+
+            console.error(
+                'Flyer export failed:',
+                error
+            );
+
+
+            alert(
+                'Unable to generate the flyer. Please try again.'
+            );
+
+        } finally {
+
+            button.disabled = false;
+
+            button.innerText =
+                originalText;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       INITIALIZE
+    ====================================================== */
+
+    window.addEventListener(
+        'load',
+        () => {
+
             updateFlyers();
+
         }
+    );
 
-        window.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.ql-toolbar').forEach(toolbar => {
-                const customSpan = document.createElement('span');
-                customSpan.className = 'ql-formats';
-                customSpan.innerHTML = `
-                    <button type="button" title="Insert Fraction" onclick="openFractionModal()" style="font-weight:bold; width:auto; padding:0 4px;">x/y</button>
-                    <button type="button" title="Summation" onclick="insertSymbol('∑')" style="font-weight:bold;">∑</button>
-                    <button type="button" title="Integral" onclick="insertSymbol('∫')" style="font-weight:bold;">∫</button>
-                    <button type="button" title="Square Root" onclick="insertSymbol('√')" style="font-weight:bold;">√</button>
-                    <button type="button" title="Pi" onclick="insertSymbol('π')" style="font-weight:bold;">π</button>
-                    <button type="button" title="Implies" onclick="insertSymbol('⇒')" style="font-weight:bold;">⇒</button>
-                `;
-                toolbar.appendChild(customSpan);
-            });
-        });
+</script>
 
-        function updateFlyers() {
-            document.getElementById('prev-subject').innerText = document.getElementById('inp-subject').value;
-            
-            editors.forEach(item => {
-                const htmlContent = item.quill.root.innerHTML;
-                const cleanHtml = htmlContent === '<p><br></p>' ? '' : htmlContent;
-                document.getElementById(item.previewId).innerHTML = item.prefix + cleanHtml;
-            });
-        }
-
-        editors.forEach(item => {
-            item.quill.on('text-change', updateFlyers);
-        });
-
-        document.getElementById('inp-subject').addEventListener('input', updateFlyers);
-
-        function downloadFlyer(elementId, filename) {
-            const flyerElement = document.getElementById(elementId);
-            html2canvas(flyerElement, { scale: 2, useCORS: true }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = filename;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
-        }
-
-        window.onload = updateFlyers;
-    </script>
 </body>
 </html>
